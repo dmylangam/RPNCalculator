@@ -1,4 +1,4 @@
-package com.anz.rpn.calculator.model;
+package com.anz.rpn.calculator.operation;
 
 /**
  * @author deepamylangam
