@@ -11,12 +11,12 @@ import com.anz.rpn.calculator.model.CalculatorHelper;
 import com.anz.rpn.calculator.model.OperationInfo;
 import com.anz.rpn.calculator.model.RPNCalculatorModel;
 
-public class AddOperation extends AbstractOperation {
+public class SubtractOperation extends AbstractOperation {
 
-	private static IOperation operation = new AddOperation();
+	private static IOperation operation = new SubtractOperation();
 
-	private AddOperation() {
-		super(CalculatorConstants.ADD_STR);
+	private SubtractOperation() {
+		super(CalculatorConstants.SUBTRACT_STR);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class AddOperation extends AbstractOperation {
 			BigDecimal val1 = CalculatorHelper.convertString(model.getStack().pop());
 			BigDecimal val2 = CalculatorHelper.convertString(model.getStack().pop());
 
-			updateModel(model, val1.add(val2, new MathContext(15)));
+			updateModel(model, val2.subtract(val1, new MathContext(15)));
 		}
 	}
 

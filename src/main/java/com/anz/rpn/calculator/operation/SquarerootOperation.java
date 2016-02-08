@@ -11,12 +11,12 @@ import com.anz.rpn.calculator.model.CalculatorHelper;
 import com.anz.rpn.calculator.model.OperationInfo;
 import com.anz.rpn.calculator.model.RPNCalculatorModel;
 
-public class AddOperation extends AbstractOperation {
+public class SquarerootOperation extends AbstractOperation {
 
-	private static IOperation operation = new AddOperation();
+	private static IOperation operation = new SquarerootOperation();
 
-	private AddOperation() {
-		super(CalculatorConstants.ADD_STR);
+	private SquarerootOperation() {
+		super(CalculatorConstants.SQRT_STR);
 	}
 
 	@Override
@@ -24,9 +24,8 @@ public class AddOperation extends AbstractOperation {
 			throws InvalidInputException, InvalidModelException, InsufficientParameterException {
 		if (validateStackBeforeOperation(model, currentOpInfo)) {
 			BigDecimal val1 = CalculatorHelper.convertString(model.getStack().pop());
-			BigDecimal val2 = CalculatorHelper.convertString(model.getStack().pop());
 
-			updateModel(model, val1.add(val2, new MathContext(15)));
+			updateModel(model, new BigDecimal(Math.sqrt(val1.doubleValue()), new MathContext(15)));
 		}
 	}
 
@@ -35,9 +34,9 @@ public class AddOperation extends AbstractOperation {
 			throws InsufficientParameterException, InvalidModelException, InvalidInputException {
 		if (validateModelAndOperationInfo(model, currOpInfo)) {
 
-			if (model.getStack().size() < 2) {
+			if (model.getStack().size() < 1) {
 				throw new InvalidInputException(
-						" validation error" + CalculatorConstants.POSITION_STR + currOpInfo.getOperandPosition()
+						" validation error " + CalculatorConstants.POSITION_STR + currOpInfo.getOperandPosition()
 								+ CalculatorConstants.OPERATOR_STR + currOpInfo.getOperationValue());
 			}
 			String currValinStack = CalculatorHelper.peek(model.getStack());
@@ -45,13 +44,11 @@ public class AddOperation extends AbstractOperation {
 											// loop
 				throw new InsufficientParameterException(currOpInfo.getOperationValue(),
 						currOpInfo.getOperandPosition());
-			}
-			String prevValinStack = CalculatorHelper.peekPrevious(model.getStack());
-			if (prevValinStack == null) {
-				model.getStack().push(currValinStack);
-				throw new InsufficientParameterException(currOpInfo.getOperationValue(),
-						currOpInfo.getOperandPosition());
 			} else {
+				if (CalculatorHelper.convertString(currValinStack).doubleValue() < 0) {
+					throw new InvalidModelException(
+							" validation error: " + "Cannot do a square root of negative number:" + currValinStack);
+				}
 				return true;
 			}
 		}

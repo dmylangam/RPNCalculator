@@ -11,12 +11,12 @@ import com.anz.rpn.calculator.model.CalculatorHelper;
 import com.anz.rpn.calculator.model.OperationInfo;
 import com.anz.rpn.calculator.model.RPNCalculatorModel;
 
-public class AddOperation extends AbstractOperation {
+public class DivisionOperation extends AbstractOperation {
 
-	private static IOperation operation = new AddOperation();
+	private static IOperation operation = new DivisionOperation();
 
-	private AddOperation() {
-		super(CalculatorConstants.ADD_STR);
+	private DivisionOperation() {
+		super(CalculatorConstants.DIVISION_STR);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class AddOperation extends AbstractOperation {
 			BigDecimal val1 = CalculatorHelper.convertString(model.getStack().pop());
 			BigDecimal val2 = CalculatorHelper.convertString(model.getStack().pop());
 
-			updateModel(model, val1.add(val2, new MathContext(15)));
+			updateModel(model, val2.divide(val1, new MathContext(15)));
 		}
 	}
 
@@ -52,6 +52,10 @@ public class AddOperation extends AbstractOperation {
 				throw new InsufficientParameterException(currOpInfo.getOperationValue(),
 						currOpInfo.getOperandPosition());
 			} else {
+				if (CalculatorHelper.convertString(prevValinStack).intValue() == 0) {
+					throw new InvalidInputException("0 at position: " + currOpInfo.getOperandPosition()
+							+ " in Division operation is not allowed");
+				}
 				return true;
 			}
 		}
