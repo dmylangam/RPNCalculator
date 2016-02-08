@@ -1,4 +1,4 @@
-package com.test.anz.model;
+package com.anz.rpn.calculator.model;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
