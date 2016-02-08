@@ -9,7 +9,6 @@ import org.junit.runners.JUnit4;
 
 import com.anz.rpn.TestDataHelper;
 import com.anz.rpn.calculator.exception.InsufficientParameterException;
-import com.anz.rpn.calculator.exception.InvalidInputException;
 import com.anz.rpn.calculator.exception.InvalidModelException;
 import com.anz.rpn.calculator.model.OperationInfo;
 import com.anz.rpn.calculator.model.RPNCalculatorModel;
@@ -26,7 +25,7 @@ public class MultiplyOperationTest {
 		operation = MultiplyOperation.getInstance();
 		opInfo = new OperationInfo(0, 5, "*");
 		try {
-			model = TestDataHelper.createSampleModel(TestDataHelper.inputStr);
+			model = TestDataHelper.createSampleModel(TestDataHelper.aSamplePosInputStr);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -35,9 +34,24 @@ public class MultiplyOperationTest {
 	}
 
 	@Test
-	public void testExecute() throws InvalidInputException, InvalidModelException, InsufficientParameterException {
+	public void testExecute() throws InvalidModelException, InsufficientParameterException {
 		operation.execute(model, opInfo);
 		assertTrue(model.getStack().size() == 1);
 		assertTrue(model.getStack().get(0).equals("8"));
+	}
+
+	@Test(expected = InsufficientParameterException.class)
+	public void testExecuteFailInvalidInput() throws Exception {
+		model = TestDataHelper.createSampleModel("4 *");
+		operation.execute(model, new OperationInfo(1, 3, "*"));
+
+		model = TestDataHelper.createSampleModel("*");
+		operation.execute(model, new OperationInfo(0, 1, "*"));
+
+		model = TestDataHelper.createSampleModel("4 * 5");
+		operation.execute(model, new OperationInfo(1, 3, "*"));
+
+		model = TestDataHelper.createSampleModel("4");
+		operation.execute(model, new OperationInfo(0, 1, "*"));
 	}
 }

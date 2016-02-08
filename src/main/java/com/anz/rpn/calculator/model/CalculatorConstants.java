@@ -13,7 +13,7 @@ public class CalculatorConstants {
 	public static final String UNDO_REGEX = "(?i:undo)";
 	public static final String CLEAR_REGEX = "(?i:clear)";
 	public static final String COMMAND_REGEX = SQRT_REGEX + "|" + UNDO_REGEX + "|" + CLEAR_REGEX;
-	public static final String REAL_NUMBERS_REGEX = "(-)?(^\\d+(\\.\\d+))?$";
+	public static final String REAL_NUMBERS_REGEX = "^-?\\d*(.\\d+)?$";
 	public static final String ADD_STR = "+";
 	public static final String SUBTRACT_STR = "-";
 	public static final String MULTIPLY_STR = "*";

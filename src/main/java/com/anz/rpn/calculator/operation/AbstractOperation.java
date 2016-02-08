@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import org.apache.commons.lang.StringUtils;
 
 import com.anz.rpn.calculator.exception.InsufficientParameterException;
-import com.anz.rpn.calculator.exception.InvalidInputException;
 import com.anz.rpn.calculator.exception.InvalidModelException;
 import com.anz.rpn.calculator.model.CalculatorConstants;
 import com.anz.rpn.calculator.model.CalculatorHelper;
@@ -25,21 +24,20 @@ public abstract class AbstractOperation implements IOperation {
 	}
 
 	protected final boolean validateModelAndOperationInfo(RPNCalculatorModel model, OperationInfo currOpInfo)
-			throws InvalidModelException {
-		if (model == null || model.getStack() == null || model.getInput() == null || model.getInput().size() == 0
-				|| currOpInfo == null || StringUtils.isEmpty(currOpInfo.getOperationValue())) {
-			throw new IllegalArgumentException("Invalid Argument passed into the operation");
+			throws InsufficientParameterException {
+		if (model == null || model.getStack() == null || model.getCompleteInputList() == null
+				|| model.getCompleteInputList().size() == 0 || currOpInfo == null
+				|| StringUtils.isEmpty(currOpInfo.getOperationValue())) {
+			throw new InsufficientParameterException(currOpInfo.getOperationValue(), currOpInfo.getOperandPosition());
 		}
 		if (!currOpInfo.getOperationValue().equalsIgnoreCase(operandStr)) {
-			throw new InvalidModelException(
-					"before doing operation at " + CalculatorConstants.POSITION_STR + currOpInfo.getOperandPosition()
-							+ CalculatorConstants.OPERATOR_STR + currOpInfo.getOperationValue());
+			throw new InsufficientParameterException(currOpInfo.getOperationValue(), currOpInfo.getOperandPosition());
 		}
 		return true;
 	}
 
 	protected abstract boolean validateStackBeforeOperation(RPNCalculatorModel model, OperationInfo currOpInfo)
-			throws InsufficientParameterException, InvalidModelException, InvalidInputException;
+			throws InsufficientParameterException, InvalidModelException;
 
 	protected boolean validateStackAfterOperation(RPNCalculatorModel model, OperationInfo currOpInfo)
 			throws InvalidModelException {

@@ -1,7 +1,6 @@
 package com.anz.rpn.calculator.operation;
 
 import com.anz.rpn.calculator.exception.InsufficientParameterException;
-import com.anz.rpn.calculator.exception.InvalidInputException;
 import com.anz.rpn.calculator.exception.InvalidModelException;
 import com.anz.rpn.calculator.model.CalculatorConstants;
 import com.anz.rpn.calculator.model.CalculatorHelper;
@@ -18,7 +17,7 @@ public class UndoOperation extends AbstractOperation {
 
 	@Override
 	public void execute(RPNCalculatorModel model, OperationInfo currentOpInfo)
-			throws InvalidInputException, InvalidModelException, InsufficientParameterException {
+			throws InvalidModelException, InsufficientParameterException {
 
 		if (validateStackBeforeOperation(model, currentOpInfo)) {
 			handleUndoOperation(model, currentOpInfo.getIndex(), currentOpInfo);
@@ -26,8 +25,8 @@ public class UndoOperation extends AbstractOperation {
 	}
 
 	protected int handleUndoOperation(RPNCalculatorModel model, int index, OperationInfo currentOpInfo)
-			throws InvalidInputException, InsufficientParameterException, InvalidModelException {
-		String currVal = model.getInput().get(index);
+			throws InsufficientParameterException, InvalidModelException {
+		String currVal = model.getCompleteInputList().get(index);
 		if (CalculatorHelper.isNumber(currVal)) { // if prev is number, then
 													// just pop it
 			model.getStack().pop();
@@ -38,8 +37,8 @@ public class UndoOperation extends AbstractOperation {
 			// operation
 			if (index >= 2) {
 				boolean donePrevVal = false;
-				String op1 = model.getInput().get(index - 1);
-				String op2 = model.getInput().get(index - 2);
+				String op1 = model.getCompleteInputList().get(index - 1);
+				String op2 = model.getCompleteInputList().get(index - 2);
 				if (CalculatorHelper.isNumber(op1) || CalculatorHelper.isNumber(op2)) {
 					model.getStack().pop();
 				}
@@ -65,7 +64,7 @@ public class UndoOperation extends AbstractOperation {
 			if (CalculatorHelper.peek(model.getStack()) == null) {
 				throw new InsufficientParameterException(currVal, currentOpInfo.getOperandPosition());
 			} else {
-				String op1 = model.getInput().get(index - 1);
+				String op1 = model.getCompleteInputList().get(index - 1);
 				if (CalculatorHelper.isNumber(op1)) { // if it is number, then
 														// only pop the sqrt
 														// result and and push
@@ -86,7 +85,7 @@ public class UndoOperation extends AbstractOperation {
 			if (CalculatorHelper.peek(model.getStack()) == null) {
 				throw new InsufficientParameterException(currVal, currentOpInfo.getOperandPosition());
 			} else {
-				String op1 = model.getInput().get(index - 1);
+				String op1 = model.getCompleteInputList().get(index - 1);
 				if (CalculatorHelper.isUndoCommand(op1)) {
 					model.getStack().pop();
 				} else {

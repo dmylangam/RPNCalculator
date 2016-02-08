@@ -7,7 +7,8 @@ import com.anz.rpn.calculator.model.RPNCalculatorModel;
 
 public class TestDataHelper {
 
-	public static final String inputStr = "4 2 ";
+	public static final String aSamplePosInputStr = "4 2 ";
+	public static final String aSampleNegInputStr = "4 -1 ";
 
 	public static List<String> createSampleList(String... str) {
 		List<String> inputList = Arrays.asList(str);
@@ -16,10 +17,11 @@ public class TestDataHelper {
 
 	public static RPNCalculatorModel createSampleModel(String inputStr) throws Exception {
 		RPNCalculatorModel model = new RPNCalculatorModel();
-		model.setInput(inputStr);
-		for (int i = 0; i < model.getInput().size(); i++) {
-			model.getStack().push(model.getInput().get(i));
+		model.addAll(model.evaluateAndCreateInputArray(inputStr));
+		for (int i = 0; i < model.getCompleteInputList().size(); i++) {
+			model.getStack().push(model.getCompleteInputList().get(i));
 		}
 		return model;
 	}
+
 }

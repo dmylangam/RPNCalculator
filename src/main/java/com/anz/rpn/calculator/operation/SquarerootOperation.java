@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 import com.anz.rpn.calculator.exception.InsufficientParameterException;
-import com.anz.rpn.calculator.exception.InvalidInputException;
 import com.anz.rpn.calculator.exception.InvalidModelException;
 import com.anz.rpn.calculator.model.CalculatorConstants;
 import com.anz.rpn.calculator.model.CalculatorHelper;
@@ -21,7 +20,7 @@ public class SquarerootOperation extends AbstractOperation {
 
 	@Override
 	public void execute(RPNCalculatorModel model, OperationInfo currentOpInfo)
-			throws InvalidInputException, InvalidModelException, InsufficientParameterException {
+			throws InvalidModelException, InsufficientParameterException {
 		if (validateStackBeforeOperation(model, currentOpInfo)) {
 			BigDecimal val1 = CalculatorHelper.convertString(model.getStack().pop());
 
@@ -31,28 +30,26 @@ public class SquarerootOperation extends AbstractOperation {
 
 	@Override
 	protected boolean validateStackBeforeOperation(RPNCalculatorModel model, OperationInfo currOpInfo)
-			throws InsufficientParameterException, InvalidModelException, InvalidInputException {
+			throws InsufficientParameterException, InvalidModelException {
 		if (validateModelAndOperationInfo(model, currOpInfo)) {
 
 			if (model.getStack().size() < 1) {
-				throw new InvalidInputException(
-						" validation error " + CalculatorConstants.POSITION_STR + currOpInfo.getOperandPosition()
-								+ CalculatorConstants.OPERATOR_STR + currOpInfo.getOperationValue());
-			}
-			String currValinStack = CalculatorHelper.peek(model.getStack());
-			if (currValinStack == null) { // if not valid, then end the
-											// loop
 				throw new InsufficientParameterException(currOpInfo.getOperationValue(),
 						currOpInfo.getOperandPosition());
-			} else {
-				if (CalculatorHelper.convertString(currValinStack).doubleValue() < 0) {
-					throw new InvalidModelException(
-							" validation error: " + "Cannot do a square root of negative number:" + currValinStack);
-				}
-				return true;
 			}
+			String currValinStack = CalculatorHelper.peek(model.getStack());
+			if (currValinStack == null || !CalculatorHelper.isNumber(currValinStack)) {
+				throw new InsufficientParameterException(currOpInfo.getOperationValue(),
+						currOpInfo.getOperandPosition());
+			} else if (CalculatorHelper.convertString(currValinStack).doubleValue() < 0) {
+				throw new InvalidModelException(
+						" validation error: " + "Cannot do a square root of negative number:" + currValinStack);
+			} else
+				return true;
+
 		}
 		return false;
+
 	}
 
 	protected static IOperation getInstance() {

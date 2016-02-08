@@ -1,6 +1,5 @@
 package com.anz.rpn.calculator.operation;
 
-import com.anz.rpn.calculator.exception.InvalidInputException;
 import com.anz.rpn.calculator.model.CalculatorHelper;
 import com.anz.rpn.calculator.model.RPNCalculatorModel;
 
@@ -10,10 +9,9 @@ import com.anz.rpn.calculator.model.RPNCalculatorModel;
  */
 public class OperationFactory {
 
-	public static final IOperation getOperationObj(RPNCalculatorModel model, String operandStr)
-			throws InvalidInputException {
+	public static final IOperation getOperationObj(RPNCalculatorModel model, String operandStr) {
 		if (!CalculatorHelper.isKnownOperation(operandStr)) {
-			throw new InvalidInputException("Unknown operation: " + operandStr);
+			throw new IllegalStateException("Unknown operation: " + operandStr);
 		}
 		if (CalculatorHelper.isOperand(operandStr)) {
 			switch (operandStr) {

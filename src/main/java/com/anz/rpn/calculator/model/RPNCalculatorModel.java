@@ -7,36 +7,29 @@ import java.util.Stack;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.anz.rpn.calculator.exception.InvalidInputException;
-
 /**
  * @author deepamylangam
  *
  */
 public class RPNCalculatorModel {
 
-	private List<String> input = new ArrayList<String>();
+	private List<String> completeInputList = new ArrayList<String>();
 	protected Stack<String> stack = new Stack<String>();
-	private int operandPosition = 0;
-	
-	public void setInput(String inputLine) throws InvalidInputException {
-		validateInputString(inputLine);
+
+	public List<String> evaluateAndCreateInputArray(String inputLine) {
+		return validateInputString(inputLine);
 	}
 
 	public Stack<String> getStack() {
 		return stack;
 	}
 
-	public final List<String> getInput() {
-		return input;
+	public List<String> getCompleteInputList() {
+		return completeInputList;
 	}
 
-	public int getOperandPosition() {
-		return operandPosition;
-	}
-
-	public void setOperandPosition(int operandPosition) {
-		this.operandPosition = operandPosition;
+	public void addAll(List<String> list) {
+		getCompleteInputList().addAll(list);
 	}
 
 	public String printOutput() {
@@ -49,19 +42,15 @@ public class RPNCalculatorModel {
 		return sb.toString().trim();
 	}
 
-	protected boolean validate() {
-		// TODO validate stack
-		return false;
-	}
-
-	private void validateInputString(String inputLine) throws InvalidInputException {
+	private List<String> validateInputString(String inputLine) {
 		if (StringUtils.isEmpty(inputLine.trim())) {
-			throw new InvalidInputException("No entry");
+			throw new IllegalStateException("No entry");
 		} else {
-			input = Arrays.asList(inputLine.split(" "));
-			if (input.isEmpty()) {
-				throw new InvalidInputException("Blank space entry is invalid");
+			List<String> inputList = Arrays.asList(inputLine.split(" "));
+			if (inputList.isEmpty()) {
+				throw new IllegalStateException("Blank space entry is invalid");
 			}
+			return inputList;
 		}
 	}
 }

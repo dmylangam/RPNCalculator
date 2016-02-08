@@ -1,7 +1,6 @@
 package com.anz.rpn.calculator.operation;
 
 import com.anz.rpn.calculator.exception.InsufficientParameterException;
-import com.anz.rpn.calculator.exception.InvalidInputException;
 import com.anz.rpn.calculator.exception.InvalidModelException;
 import com.anz.rpn.calculator.model.CalculatorConstants;
 import com.anz.rpn.calculator.model.OperationInfo;
@@ -17,7 +16,7 @@ public class ClearOperation extends AbstractOperation {
 
 	@Override
 	public void execute(RPNCalculatorModel model, OperationInfo currentOpInfo)
-			throws InvalidInputException, InvalidModelException, InsufficientParameterException {
+			throws InvalidModelException, InsufficientParameterException {
 		if (validateStackBeforeOperation(model, currentOpInfo)) {
 			model.getStack().clear();
 		}
