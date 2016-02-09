@@ -24,7 +24,7 @@ public class AddOperationTest {
 		operation = AddOperation.getInstance();
 		opInfo = new OperationInfo(0, 5, "+");
 		try {
-			model = TestDataHelper.createSampleModel(TestDataHelper.aSamplePosInputStr);
+			model = TestDataHelper.createSampleModelWithStackForOperations(TestDataHelper.aSamplePosInputStr);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -38,7 +38,7 @@ public class AddOperationTest {
 		assertTrue(model.getStack().size() == 1);
 		assertTrue(model.getStack().get(0).equals("6"));
 
-		model = TestDataHelper.createSampleModel(TestDataHelper.aSampleNegInputStr);
+		model = TestDataHelper.createSampleModelWithStackForOperations(TestDataHelper.aSampleNegInputStr);
 		operation.execute(model, opInfo);
 		assertTrue(model.getStack().size() == 1);
 		assertTrue(model.getStack().get(0).equals("3"));
@@ -47,16 +47,16 @@ public class AddOperationTest {
 
 	@Test(expected = InsufficientParameterException.class)
 	public void testExecuteFailInvalidInput() throws Exception {
-		model = TestDataHelper.createSampleModel("4 +");
+		model = TestDataHelper.createSampleModelWithStackForOperations("4 +");
 		operation.execute(model, new OperationInfo(1, 3, "+"));
 
-		model = TestDataHelper.createSampleModel("+");
+		model = TestDataHelper.createSampleModelWithStackForOperations("+");
 		operation.execute(model, new OperationInfo(0, 1, "+"));
 
-		model = TestDataHelper.createSampleModel("4 + 5");
+		model = TestDataHelper.createSampleModelWithStackForOperations("4 + 5");
 		operation.execute(model, new OperationInfo(1, 3, "+"));
 
-		model = TestDataHelper.createSampleModel("4");
+		model = TestDataHelper.createSampleModelWithStackForOperations("4");
 		operation.execute(model, new OperationInfo(0, 1, "+"));
 	}
 

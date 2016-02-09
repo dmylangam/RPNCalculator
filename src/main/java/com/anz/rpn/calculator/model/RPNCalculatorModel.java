@@ -36,8 +36,7 @@ public class RPNCalculatorModel {
 		StringBuffer sb = new StringBuffer();
 		sb.append(CalculatorConstants.STACK_STR).append(CalculatorConstants.SPACE_STR);
 		for (int i = 0; i < stack.size(); i++) {
-			// TODO precision to 10 decimal
-			sb.append(stack.get(i)).append(CalculatorConstants.SPACE_STR);
+			sb.append(CalculatorHelper.getStackOutputForDisplay(stack.get(i))).append(CalculatorConstants.SPACE_STR);
 		}
 		return sb.toString().trim();
 	}

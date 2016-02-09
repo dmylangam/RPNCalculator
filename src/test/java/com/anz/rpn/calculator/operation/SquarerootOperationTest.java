@@ -25,7 +25,7 @@ public class SquarerootOperationTest {
 		operation = SquarerootOperation.getInstance();
 		opInfo = new OperationInfo(0, 5, "sqrt");
 		try {
-			model = TestDataHelper.createSampleModel(TestDataHelper.aSamplePosInputStr);
+			model = TestDataHelper.createSampleModelWithStackForOperations(TestDataHelper.aSamplePosInputStr);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,10 +43,10 @@ public class SquarerootOperationTest {
 
 	@Test(expected = InsufficientParameterException.class)
 	public void testExecuteFailInvalidInput() throws Exception {
-		model = TestDataHelper.createSampleModel("-4 sqrt");
+		model = TestDataHelper.createSampleModelWithStackForOperations("-4 sqrt");
 		operation.execute(model, new OperationInfo(1, 3, "sqrt"));
 
-		model = TestDataHelper.createSampleModel("sqrt");
+		model = TestDataHelper.createSampleModelWithStackForOperations("sqrt");
 		operation.execute(model, new OperationInfo(0, 1, "sqrt"));
 	}
 }

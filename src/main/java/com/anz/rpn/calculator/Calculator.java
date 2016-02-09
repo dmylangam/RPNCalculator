@@ -32,7 +32,7 @@ public class Calculator {
 				int size = calcModel.getCompleteInputList().size();
 				String input = sc.nextLine().trim();
 				calcModel.addAll(calcModel.evaluateAndCreateInputArray(input));
-				computeAndPopulateStack(calcModel, size);
+				calcModel = computeAndPopulateStack(calcModel, size);
 			} catch (InsufficientParameterException is) {
 				System.out.println(is.getErrorMsg());
 			} catch (InvalidModelException iv) {
@@ -47,7 +47,7 @@ public class Calculator {
 		return calcModel;
 	}
 
-	protected void computeAndPopulateStack(RPNCalculatorModel model, int index)
+	protected RPNCalculatorModel computeAndPopulateStack(RPNCalculatorModel model, int index)
 			throws InsufficientParameterException, InvalidModelException {
 		List<String> inputList = model.getCompleteInputList();
 		for (int i = index; i < inputList.size(); i++) {
@@ -63,15 +63,16 @@ public class Calculator {
 			if (!CalculatorHelper.isNumber(currVal)) { // if it is not a
 														// number, then need
 														// to
-				OperationFactory.getOperationObj(calcModel, currVal).execute(calcModel, currOpInfo);
+				OperationFactory.getOperationObj(model, currVal).execute(model, currOpInfo);
 
 			} else if (CalculatorHelper.isNumber(currVal)) {
-				calcModel.getStack().push(currVal);
+				model.getStack().push(currVal);
 			} else {
 				System.out.println("Unknown operation"); // TODO log this
 															// error
 			}
 
 		}
+		return model;
 	}
 }

@@ -31,7 +31,7 @@ public class RPNCalculatorModelTest {
 	}
 
 	@Test
-	public void testevaluateAndCreateInputArray() {
+	public void testEvaluateAndCreateInputArray() {
 		model.evaluateAndCreateInputArray("1");
 		assertTrue(model.getCompleteInputList().size() == 1);
 		assertTrue(model.getCompleteInputList().get(0).equals("1"));

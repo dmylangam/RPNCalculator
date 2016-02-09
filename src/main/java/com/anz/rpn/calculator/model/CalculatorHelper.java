@@ -2,6 +2,7 @@ package com.anz.rpn.calculator.model;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.text.DecimalFormat;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
@@ -76,5 +77,11 @@ public class CalculatorHelper {
 			index = index * 2 + 1; // add the space position
 		}
 		return index;
+	}
+
+	public static final String getStackOutputForDisplay(String val) {
+		DecimalFormat df = new DecimalFormat(CalculatorConstants.TEN_DFORMAT_STR);
+		return df.format(convertString(val));
+
 	}
 }

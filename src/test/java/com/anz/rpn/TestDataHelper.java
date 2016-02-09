@@ -15,12 +15,18 @@ public class TestDataHelper {
 		return inputList;
 	}
 
-	public static RPNCalculatorModel createSampleModel(String inputStr) throws Exception {
+	public static RPNCalculatorModel createSampleModelWithStackForOperations(String inputStr) throws Exception {
 		RPNCalculatorModel model = new RPNCalculatorModel();
 		model.addAll(model.evaluateAndCreateInputArray(inputStr));
 		for (int i = 0; i < model.getCompleteInputList().size(); i++) {
 			model.getStack().push(model.getCompleteInputList().get(i));
 		}
+		return model;
+	}
+
+	public static RPNCalculatorModel createSampleModel(String inputStr) throws Exception {
+		RPNCalculatorModel model = new RPNCalculatorModel();
+		model.addAll(model.evaluateAndCreateInputArray(inputStr));
 		return model;
 	}
 

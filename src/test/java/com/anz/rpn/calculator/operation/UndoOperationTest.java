@@ -25,7 +25,7 @@ public class UndoOperationTest {
 		operation = UndoOperation.getInstance();
 		opInfo = new OperationInfo(0, 5, "undo");
 		try {
-			model = TestDataHelper.createSampleModel(TestDataHelper.aSamplePosInputStr);
+			model = TestDataHelper.createSampleModelWithStackForOperations(TestDataHelper.aSamplePosInputStr);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -42,7 +42,7 @@ public class UndoOperationTest {
 
 	@Test(expected = InsufficientParameterException.class)
 	public void testExecuteFailInvalidInput() throws Exception {
-		model = TestDataHelper.createSampleModel("undo");
+		model = TestDataHelper.createSampleModelWithStackForOperations("undo");
 		operation.execute(model, new OperationInfo(0, 1, "sqrt"));
 	}
 }

@@ -22,6 +22,7 @@ public class CalculatorConstants {
 	public static final String UNDO_STR = "undo";
 	public static final String SQRT_STR = "sqrt";
 	public static final String INVALID_MODEL_STR = "Invalid model: ";
-	public static final String INVALID_INPUT_STR = "Invalid inpu: ";
+	public static final String INVALID_INPUT_STR = "Invalid input: ";
+	public static final String TEN_DFORMAT_STR = "#.##########";
 
 }

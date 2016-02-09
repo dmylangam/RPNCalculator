@@ -1,5 +1,6 @@
 package com.anz.rpn.calculator;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -33,7 +34,7 @@ public class CalculatorTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testComputeAndPopulateStackWithNoEntry() throws Exception {
-		model = TestDataHelper.createSampleModel(" ");
+		model = TestDataHelper.createSampleModelWithStackForOperations(" ");
 		calculator.computeAndPopulateStack(model, 0);
 	}
 
@@ -57,19 +58,28 @@ public class CalculatorTest {
 		model = TestDataHelper.createSampleModel("1 - 0");
 		calculator.computeAndPopulateStack(model, 0);
 	}
-	
+
 	@Test
 	public void testComputeAndPopulateStackCase1() throws Exception {
+		model.getStack().clear();
+		model.getCompleteInputList().clear();
 		model = TestDataHelper.createSampleModel("5 2");
 		calculator.computeAndPopulateStack(model, 0);
 		assertTrue(model.getStack().size() == 2);
 		assertTrue(model.getStack().get(0).equals("5"));
 		assertTrue(model.getStack().get(1).equals("2"));
 	}
-	
+
 	@Test
-	public void testComputeAndPopulateStackCase2() {
-		
+	public void testComputeAndPopulateStackCase2() throws Exception {
+		model.getStack().clear();
+		model.getCompleteInputList().clear();
+		String expResult = "stack: 1.4142135624";		//rounded off
+		model = TestDataHelper.createSampleModel("2 sqrt");
+		calculator.computeAndPopulateStack(model, 0);
+		assertTrue(model.getStack().size() == 1);
+		assertEquals(expResult, model.printOutput());
+
 	}
-	
+
 }

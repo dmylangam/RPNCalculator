@@ -25,7 +25,7 @@ public class ClearOperationTest {
 		operation = ClearOperation.getInstance();
 		opInfo = new OperationInfo(0, 5, "clear");
 		try {
-			model = TestDataHelper.createSampleModel(TestDataHelper.aSamplePosInputStr);
+			model = TestDataHelper.createSampleModelWithStackForOperations(TestDataHelper.aSamplePosInputStr);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -41,10 +41,10 @@ public class ClearOperationTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testExecuteFailInvalidInput() throws Exception {
-		model = TestDataHelper.createSampleModel(" ");
+		model = TestDataHelper.createSampleModelWithStackForOperations(" ");
 		operation.execute(model, opInfo);
 
-		model = TestDataHelper.createSampleModel("");
+		model = TestDataHelper.createSampleModelWithStackForOperations("");
 		operation.execute(model, opInfo);
 
 	}
