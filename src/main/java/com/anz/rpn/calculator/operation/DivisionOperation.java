@@ -25,7 +25,7 @@ public class DivisionOperation extends AbstractOperation {
 			BigDecimal val1 = CalculatorHelper.convertString(model.getStack().pop());
 			BigDecimal val2 = CalculatorHelper.convertString(model.getStack().pop());
 
-			updateModel(model, val2.divide(val1, new MathContext(15)));
+			updateModel(model, evaluate(val1, val2));
 		}
 	}
 
@@ -56,5 +56,10 @@ public class DivisionOperation extends AbstractOperation {
 
 	protected static IOperation getInstance() {
 		return operation;
+	}
+
+	@Override
+	public BigDecimal evaluate(BigDecimal... value) {
+		return value[1].divide(value[0], new MathContext(15));
 	}
 }

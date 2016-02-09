@@ -1,5 +1,7 @@
 package com.anz.rpn.calculator.operation;
 
+import java.math.BigDecimal;
+
 import com.anz.rpn.calculator.exception.InsufficientParameterException;
 import com.anz.rpn.calculator.exception.InvalidModelException;
 import com.anz.rpn.calculator.model.CalculatorConstants;
@@ -36,5 +38,10 @@ public class ClearOperation extends AbstractOperation {
 
 	protected static IOperation getInstance() {
 		return operation;
+	}
+
+	@Override
+	public BigDecimal evaluate(BigDecimal... value) {
+		return null;
 	}
 }

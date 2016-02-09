@@ -23,7 +23,7 @@ public class UndoOperationTest {
 	@Before
 	public void initModel() {
 		operation = UndoOperation.getInstance();
-		opInfo = new OperationInfo(0, 5, "undo");
+		opInfo = new OperationInfo(2, 5, "undo");
 		try {
 			model = TestDataHelper.createSampleModelWithStackForOperations(TestDataHelper.aSamplePosInputStr);
 		} catch (Exception e) {

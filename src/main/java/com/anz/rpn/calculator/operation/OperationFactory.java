@@ -14,14 +14,14 @@ public class OperationFactory {
 			throw new IllegalStateException("Unknown operation: " + operandStr);
 		}
 		if (CalculatorHelper.isOperand(operandStr)) {
-			switch (operandStr) {
-			case "+":
+			switch (operandStr.charAt(0)) {
+			case '+':
 				return AddOperation.getInstance();
-			case "-":
+			case '-':
 				return SubtractOperation.getInstance();
-			case "/":
+			case '/':
 				return DivisionOperation.getInstance();
-			case "*":
+			case '*':
 				return MultiplyOperation.getInstance();
 			default:
 				return null;

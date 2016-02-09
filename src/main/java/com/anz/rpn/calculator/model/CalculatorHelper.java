@@ -12,7 +12,7 @@ import java.util.Stack;
  */
 public class CalculatorHelper {
 
-	public static final BigDecimal convertString(String val) {
+	public static final BigDecimal convertString(String val) throws NumberFormatException {
 		return new BigDecimal(val, new MathContext(15));
 	}
 
@@ -62,6 +62,9 @@ public class CalculatorHelper {
 	public static final String peekPrevious(Stack<String> stack) {
 		if (stack == null) {
 			throw new IllegalArgumentException("Invalid argument: Null");
+		}
+		if(stack.size() - 2 < 0) {
+			return null;
 		}
 		try {
 			return stack.get(stack.size() - 2); // for previous

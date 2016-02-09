@@ -24,7 +24,7 @@ public class SquarerootOperation extends AbstractOperation {
 		if (validateStackBeforeOperation(model, currentOpInfo)) {
 			BigDecimal val1 = CalculatorHelper.convertString(model.getStack().pop());
 
-			updateModel(model, new BigDecimal(Math.sqrt(val1.doubleValue()), new MathContext(15)));
+			updateModel(model, evaluate(val1));
 		}
 	}
 
@@ -54,5 +54,10 @@ public class SquarerootOperation extends AbstractOperation {
 
 	protected static IOperation getInstance() {
 		return operation;
+	}
+
+	@Override
+	public BigDecimal evaluate(BigDecimal... value) {
+		return new BigDecimal(Math.sqrt(value[0].doubleValue()), new MathContext(15));
 	}
 }

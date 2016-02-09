@@ -3,6 +3,8 @@ package com.anz.rpn.calculator.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,28 +34,24 @@ public class RPNCalculatorModelTest {
 
 	@Test
 	public void testEvaluateAndCreateInputArray() {
-		model.evaluateAndCreateInputArray("1");
-		assertTrue(model.getCompleteInputList().size() == 1);
-		assertTrue(model.getCompleteInputList().get(0).equals("1"));
-		assertTrue(model.getStack().size() == 0);
+		List<String> list = model.evaluateAndCreateInputArray("1");
+		assertTrue(list.size() == 1);
+		assertTrue(list.get(0).equals("1"));
+		
+		list = model.evaluateAndCreateInputArray("1 2");
+		assertTrue(list.size() == 2);
+		assertTrue(list.get(0).equals("1"));
+		assertTrue(list.get(1).equals("2"));
 
-		model.evaluateAndCreateInputArray("1 2");
-		assertTrue(model.getCompleteInputList().size() == 2);
-		assertTrue(model.getCompleteInputList().get(0).equals("1"));
-		assertTrue(model.getCompleteInputList().get(1).equals("2"));
-		assertTrue(model.getStack().size() == 0);
+		list = model.evaluateAndCreateInputArray("1 2 + 3");
+		assertTrue(list.size() == 4);
+		assertTrue(list.get(2).equals("+"));
+		assertTrue(list.get(3).equals("3"));
 
-		model.evaluateAndCreateInputArray("1 2 + 3");
-		assertTrue(model.getCompleteInputList().size() == 4);
-		assertTrue(model.getCompleteInputList().get(2).equals("+"));
-		assertTrue(model.getCompleteInputList().get(3).equals("3"));
-		assertTrue(model.getStack().size() == 0);
-
-		model.evaluateAndCreateInputArray("1 2 + 3 undo sqrt");
-		assertTrue(model.getCompleteInputList().size() == 6);
-		assertTrue(model.getCompleteInputList().get(4).equals("undo"));
-		assertTrue(model.getCompleteInputList().get(5).equals("sqrt"));
-		assertTrue(model.getStack().size() == 0);
+		list = model.evaluateAndCreateInputArray("1 2 + 3 undo sqrt");
+		assertTrue(list.size() == 6);
+		assertTrue(list.get(4).equals("undo"));
+		assertTrue(list.get(5).equals("sqrt"));
 
 	}
 

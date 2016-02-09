@@ -25,7 +25,7 @@ public class MultiplyOperation extends AbstractOperation {
 			BigDecimal val1 = CalculatorHelper.convertString(model.getStack().pop());
 			BigDecimal val2 = CalculatorHelper.convertString(model.getStack().pop());
 
-			updateModel(model, val1.multiply(val2, new MathContext(15)));
+			updateModel(model, evaluate(val1, val2));
 		}
 	}
 
@@ -53,5 +53,10 @@ public class MultiplyOperation extends AbstractOperation {
 
 	protected static IOperation getInstance() {
 		return operation;
+	}
+
+	@Override
+	public BigDecimal evaluate(BigDecimal... value) {
+		return value[1].multiply(value[0], new MathContext(15));
 	}
 }

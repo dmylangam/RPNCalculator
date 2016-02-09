@@ -36,7 +36,7 @@ public class Calculator {
 			} catch (InsufficientParameterException is) {
 				System.out.println(is.getErrorMsg());
 			} catch (InvalidModelException iv) {
-				// System.out.println(iv.getErrorMsg()); //TODO log this error
+				// System.out.println(iv.getErrorMsg()); // log this error
 			} finally {
 				System.out.println(calcModel.printOutput());
 			}
@@ -61,8 +61,8 @@ public class Calculator {
 				throw new InsufficientParameterException(currVal, index);
 			}
 			if (CalculatorHelper.isKnownOperation(currVal)) { // if it is not a
-														// number, then need
-														// to
+				// number, then need
+				// to
 				OperationFactory.getOperationObj(model, currVal).execute(model, currOpInfo);
 
 			} else if (CalculatorHelper.isNumber(currVal)) {

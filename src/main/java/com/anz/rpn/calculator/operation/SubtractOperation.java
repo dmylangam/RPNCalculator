@@ -22,10 +22,15 @@ public class SubtractOperation extends AbstractOperation {
 	public void execute(RPNCalculatorModel model, OperationInfo currentOpInfo)
 			throws InvalidModelException, InsufficientParameterException {
 		if (validateStackBeforeOperation(model, currentOpInfo)) {
-			BigDecimal val1 = CalculatorHelper.convertString(model.getStack().pop());
-			BigDecimal val2 = CalculatorHelper.convertString(model.getStack().pop());
-			
-			updateModel(model, val2.subtract(val1, new MathContext(15)));
+			try {
+				BigDecimal val1 = CalculatorHelper.convertString(model.getStack().pop());
+				BigDecimal val2 = CalculatorHelper.convertString(model.getStack().pop());
+
+				updateModel(model, evaluate(val1, val2));
+			} catch (NumberFormatException ne) {
+				throw new InsufficientParameterException(currentOpInfo.getOperationValue(),
+						currentOpInfo.getOperandPosition());
+			}
 		}
 	}
 
@@ -53,5 +58,10 @@ public class SubtractOperation extends AbstractOperation {
 
 	protected static IOperation getInstance() {
 		return operation;
+	}
+
+	@Override
+	public BigDecimal evaluate(BigDecimal... value) {
+		return value[1].subtract(value[0], new MathContext(15));
 	}
 }

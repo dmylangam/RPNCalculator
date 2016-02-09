@@ -1,5 +1,6 @@
 package com.anz.rpn.calculator.operation;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +28,13 @@ public class UndoOperation extends AbstractOperation {
 			if (currentOpInfo.getIndex() - 1 < 0) {
 				throw new InsufficientParameterException(currentOpInfo.getOperationValue(),
 						currentOpInfo.getOperandPosition());
-			}
-			handleUndo(model, currentOpInfo.getIndex() - 1, currentOpInfo, true);
+			} else handleUndo(model, currentOpInfo.getIndex() - 1, currentOpInfo, true);
 		}
 	}
 
 	protected int handleUndo(RPNCalculatorModel model, int index, OperationInfo currentOpInfo, boolean undoOp)
 			throws InsufficientParameterException, InvalidModelException {
+		
 		String currVal = model.getCompleteInputList().get(index);
 		// if currVal is Number
 		if ((CalculatorHelper.isNumber(currVal) || CalculatorHelper.isUndoCommand(currVal)) && undoOp) {
@@ -44,7 +45,6 @@ public class UndoOperation extends AbstractOperation {
 		} else if (CalculatorHelper.isOperand(currVal)) {
 			// find two numbers before this
 			// operation
-			operationList.add(OperationFactory.getOperationObj(model, currVal));
 			if (index >= 2) {
 				String op1 = model.getCompleteInputList().get(index - 1);
 				String op2 = model.getCompleteInputList().get(index - 2);
@@ -61,7 +61,10 @@ public class UndoOperation extends AbstractOperation {
 					} else {
 						counter = index - 2;
 					}
-					if (CalculatorHelper.isKnownOperation(op1) || CalculatorHelper.isKnownOperation(op2)) {
+					if (CalculatorHelper.isOperand(op1) || CalculatorHelper.isOperand(op2)) {
+						handleUndo(model, counter, currentOpInfo, false);
+						OperationFactory.getOperationObj(model, currVal).execute(model, currentOpInfo);
+					} else if(CalculatorHelper.isSquareRootCommand(currVal) || CalculatorHelper.isUndoCommand(currVal)) {
 						handleUndo(model, counter, currentOpInfo, false);
 					}
 					if (CalculatorHelper.isNumber(op2)) {
@@ -93,15 +96,11 @@ public class UndoOperation extends AbstractOperation {
 				}
 			}
 		} else if (CalculatorHelper.isUndoCommand(currVal)) {
-			int counter = 0;
 			String op1 = model.getCompleteInputList().get(index - 1);
 			if (CalculatorHelper.isNumber(op1)) {
 				model.getStack().push(op1);
 				handleUndo(model, index - 1, currentOpInfo, false);
 			} else if (CalculatorHelper.isUndoCommand(op1)) {
-				counter = index - 4;
-				handleUndo(model, counter, currentOpInfo, false);
-			} else {
 				handleUndo(model, index - 1, currentOpInfo, false);
 			}
 		}
@@ -117,5 +116,10 @@ public class UndoOperation extends AbstractOperation {
 
 	protected static IOperation getInstance() {
 		return operation;
+	}
+
+	@Override
+	public BigDecimal evaluate(BigDecimal... value) {
+		return null;
 	}
 }

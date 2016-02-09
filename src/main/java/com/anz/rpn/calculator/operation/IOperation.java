@@ -1,5 +1,7 @@
 package com.anz.rpn.calculator.operation;
 
+import java.math.BigDecimal;
+
 import com.anz.rpn.calculator.exception.InsufficientParameterException;
 import com.anz.rpn.calculator.exception.InvalidModelException;
 import com.anz.rpn.calculator.model.OperationInfo;
@@ -12,4 +14,6 @@ import com.anz.rpn.calculator.model.RPNCalculatorModel;
 public interface IOperation {
 	public void execute(RPNCalculatorModel model, OperationInfo currentOpInfo)
 			throws InvalidModelException, InsufficientParameterException;
+
+	public BigDecimal evaluate(BigDecimal... value);
 }
