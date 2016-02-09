@@ -1,5 +1,8 @@
 package com.anz.rpn.calculator.operation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.anz.rpn.calculator.exception.InsufficientParameterException;
 import com.anz.rpn.calculator.exception.InvalidModelException;
 import com.anz.rpn.calculator.model.CalculatorConstants;
@@ -10,6 +13,7 @@ import com.anz.rpn.calculator.model.RPNCalculatorModel;
 public class UndoOperation extends AbstractOperation {
 
 	private static IOperation operation = new UndoOperation();
+	private List<IOperation> operationList = new ArrayList<IOperation>();
 
 	private UndoOperation() {
 		super(CalculatorConstants.UNDO_STR);
@@ -20,49 +24,60 @@ public class UndoOperation extends AbstractOperation {
 			throws InvalidModelException, InsufficientParameterException {
 
 		if (validateStackBeforeOperation(model, currentOpInfo)) {
-			handleUndoOperation(model, currentOpInfo.getIndex(), currentOpInfo);
+			if (currentOpInfo.getIndex() - 1 < 0) {
+				throw new InsufficientParameterException(currentOpInfo.getOperationValue(),
+						currentOpInfo.getOperandPosition());
+			}
+			handleUndo(model, currentOpInfo.getIndex() - 1, currentOpInfo, true);
 		}
 	}
 
-	protected int handleUndoOperation(RPNCalculatorModel model, int index, OperationInfo currentOpInfo)
+	protected int handleUndo(RPNCalculatorModel model, int index, OperationInfo currentOpInfo, boolean undoOp)
 			throws InsufficientParameterException, InvalidModelException {
 		String currVal = model.getCompleteInputList().get(index);
-		if (CalculatorHelper.isNumber(currVal)) { // if prev is number, then
-													// just pop it
+		// if currVal is Number
+		if ((CalculatorHelper.isNumber(currVal) || CalculatorHelper.isUndoCommand(currVal)) && undoOp) {
 			model.getStack().pop();
-		} else if (CalculatorHelper.isOperand(currVal)) { // if it is some
-															// operation, u need
-															// to
+		} else if (CalculatorHelper.isNumber(currVal)) {
+			model.getStack().push(currVal);
+			handleUndo(model, index - 1, currentOpInfo, false);
+		} else if (CalculatorHelper.isOperand(currVal)) {
 			// find two numbers before this
 			// operation
+			operationList.add(OperationFactory.getOperationObj(model, currVal));
 			if (index >= 2) {
-				boolean donePrevVal = false;
 				String op1 = model.getCompleteInputList().get(index - 1);
 				String op2 = model.getCompleteInputList().get(index - 2);
 				if (CalculatorHelper.isNumber(op1) || CalculatorHelper.isNumber(op2)) {
 					model.getStack().pop();
 				}
-				if (!CalculatorHelper.isNumber(op1)) {
-					handleUndoOperation(model, index - 1, currentOpInfo);
-					donePrevVal = true; // this is a pointer to check if prevVal
-										// has looked at and operation handled
-				}
-				if (!CalculatorHelper.isNumber(op2) && !donePrevVal) {
-					handleUndoOperation(model, index - 2, currentOpInfo);
-				}
-				if (CalculatorHelper.isNumber(op2)) {
+				if (CalculatorHelper.isNumber(op1) && CalculatorHelper.isNumber(op2)) {
 					model.getStack().push(op2);
-				}
-				if (CalculatorHelper.isNumber(op1)) {
 					model.getStack().push(op1);
+				} else {
+					int counter = 0;
+					if (!CalculatorHelper.isNumber(op1)) {
+						counter = index - 1;
+					} else {
+						counter = index - 2;
+					}
+					if (CalculatorHelper.isKnownOperation(op1) || CalculatorHelper.isKnownOperation(op2)) {
+						handleUndo(model, counter, currentOpInfo, false);
+					}
+					if (CalculatorHelper.isNumber(op2)) {
+						model.getStack().push(op2);
+					}
+					if (CalculatorHelper.isNumber(op1)) {
+						model.getStack().push(op1);
+					}
 				}
-
 			} else {
-				throw new InsufficientParameterException(currVal, currentOpInfo.getOperandPosition());
+				throw new InsufficientParameterException(currentOpInfo.getOperationValue(), currentOpInfo.getOperandPosition());
 			}
 		} else if (CalculatorHelper.isSquareRootCommand(currVal)) {
 			if (CalculatorHelper.peek(model.getStack()) == null) {
-				throw new InsufficientParameterException(currVal, currentOpInfo.getOperandPosition());
+				throw new InsufficientParameterException(currentOpInfo.getOperationValue(),
+						currentOpInfo.getOperandPosition());
 			} else {
 				String op1 = model.getCompleteInputList().get(index - 1);
 				if (CalculatorHelper.isNumber(op1)) { // if it is number, then
@@ -72,27 +87,25 @@ public class UndoOperation extends AbstractOperation {
 					model.getStack().pop();
 					model.getStack().push(op1);
 				} else {
-					if (handleUndoOperation(model, index - 1, currentOpInfo) == 1) {
+					if (handleUndo(model, index - 1, currentOpInfo, false) == 1) {
 						SquarerootOperation.getInstance().execute(model, currentOpInfo);
 					}
 				}
 			}
-		} else if (CalculatorHelper.isUndoCommand(currVal)) { // if prev is also
-																// undo, then
-																// peek
-			// to see if a number exists in
-			// the stack
-			if (CalculatorHelper.peek(model.getStack()) == null) {
-				throw new InsufficientParameterException(currVal, currentOpInfo.getOperandPosition());
+		} else if (CalculatorHelper.isUndoCommand(currVal)) {
+			int counter = 0;
+			String op1 = model.getCompleteInputList().get(index - 1);
+			if (CalculatorHelper.isNumber(op1)) {
+				model.getStack().push(op1);
+				handleUndo(model, index - 1, currentOpInfo, false);
+			} else if (CalculatorHelper.isUndoCommand(op1)) {
+				counter = index - 4;
+				handleUndo(model, counter, currentOpInfo, false);
 			} else {
-				String op1 = model.getCompleteInputList().get(index - 1);
-				if (CalculatorHelper.isUndoCommand(op1)) {
-					model.getStack().pop();
-				} else {
-					handleUndoOperation(model, index - 1, currentOpInfo);
-				}
+				handleUndo(model, index - 1, currentOpInfo, false);
 			}
 		}
+
 		return 1;
 	}
 

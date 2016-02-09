@@ -24,7 +24,7 @@ public class SubtractOperation extends AbstractOperation {
 		if (validateStackBeforeOperation(model, currentOpInfo)) {
 			BigDecimal val1 = CalculatorHelper.convertString(model.getStack().pop());
 			BigDecimal val2 = CalculatorHelper.convertString(model.getStack().pop());
-
+			
 			updateModel(model, val2.subtract(val1, new MathContext(15)));
 		}
 	}

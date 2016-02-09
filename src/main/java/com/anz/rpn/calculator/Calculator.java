@@ -60,7 +60,7 @@ public class Calculator {
 															// entry
 				throw new InsufficientParameterException(currVal, index);
 			}
-			if (!CalculatorHelper.isNumber(currVal)) { // if it is not a
+			if (CalculatorHelper.isKnownOperation(currVal)) { // if it is not a
 														// number, then need
 														// to
 				OperationFactory.getOperationObj(model, currVal).execute(model, currOpInfo);

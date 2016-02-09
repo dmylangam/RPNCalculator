@@ -29,6 +29,10 @@ public class AddOperation extends AbstractOperation {
 		}
 	}
 
+	public void evaluate(BigDecimal val1, BigDecimal val2) {
+		val1.add(val2, new MathContext(15));
+	}
+
 	@Override
 	protected boolean validateStackBeforeOperation(RPNCalculatorModel model, OperationInfo currOpInfo)
 			throws InsufficientParameterException, InvalidModelException {

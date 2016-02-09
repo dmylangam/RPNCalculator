@@ -30,4 +30,8 @@ public class TestDataHelper {
 		return model;
 	}
 
+	public static RPNCalculatorModel addNextInput(RPNCalculatorModel model, String inputStr) throws Exception {
+		model.addAll(model.evaluateAndCreateInputArray(inputStr));
+		return model;
+	}
 }
