@@ -1,5 +1,9 @@
 package com.anz.rpn.calculator.model;
 
+/**
+ * @author deepamylangam
+ *
+ */
 public class CalculatorConstants {
 	public static final String INSUFF_PARAMETERS_STR = ": insufficient parameters";
 	public static final String OPERATOR_STR = "operator";
@@ -13,7 +17,7 @@ public class CalculatorConstants {
 	public static final String UNDO_REGEX = "(?i:undo)";
 	public static final String CLEAR_REGEX = "(?i:clear)";
 	public static final String COMMAND_REGEX = SQRT_REGEX + "|" + UNDO_REGEX + "|" + CLEAR_REGEX;
-	public static final String REAL_NUMBERS_REGEX = "^-?\\d*(.\\d+)?$";
+	public static final String REAL_NUMBERS_REGEX = "^-?\\d+(.\\d+)?$"; 
 	public static final String ADD_STR = "+";
 	public static final String SUBTRACT_STR = "-";
 	public static final String MULTIPLY_STR = "*";
@@ -24,5 +28,9 @@ public class CalculatorConstants {
 	public static final String INVALID_MODEL_STR = "Invalid model: ";
 	public static final String INVALID_INPUT_STR = "Invalid input: ";
 	public static final String TEN_DFORMAT_STR = "#.##########";
+	public static final String NO_ENTRY_VALIDATION_ERR = "No entry";
+	public static final String EMPTY_SPACE_ENTRY_VALIDATION_ERR = "Blank space entry is invalid";
+	public static final String UNKNOWN_OPERATION_ERR = "Unknown/Invalid operation";
+	
 
 }

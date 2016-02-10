@@ -3,6 +3,8 @@ package com.anz.rpn.calculator.exception;
 import com.anz.rpn.calculator.model.CalculatorConstants;
 
 /**
+ * Handles the invalid cases and displays known error conditions
+ * 
  * @author deepamylangam
  *
  */

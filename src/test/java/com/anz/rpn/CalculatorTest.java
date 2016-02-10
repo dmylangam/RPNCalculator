@@ -1,4 +1,4 @@
-package com.anz.rpn.calculator;
+package com.anz.rpn;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.anz.rpn.TestDataHelper;
+import com.anz.rpn.Calculator;
 import com.anz.rpn.calculator.exception.InsufficientParameterException;
 import com.anz.rpn.calculator.model.RPNCalculatorModel;
 
@@ -197,4 +197,55 @@ public class CalculatorTest {
 		assertTrue(model.getStack().size() == 1);
 		assertEquals("stack: 11", model.printOutput());
 	}
+	
+	@Test
+	public void testComputeAndPopulateStackCase9() throws Exception {
+		model.getStack().clear();
+		model.getCompleteInputList().clear();
+		model = TestDataHelper.createSampleModel("1 4 * undo sqrt + undo");
+		calculator.computeAndPopulateStack(model, 0);
+		assertTrue(model.getStack().size() == 2);
+		assertEquals("stack: 1 2", model.printOutput());
+	}
+	
+	@Test
+	public void testComputeAndPopulateStackCase10() throws Exception {
+		model.getStack().clear();
+		model.getCompleteInputList().clear();
+		model = TestDataHelper.createSampleModel("1 4 * undo sqrt + undo");
+		calculator.computeAndPopulateStack(model, 0);
+		assertTrue(model.getStack().size() == 2);
+		assertEquals("stack: 1 2", model.printOutput());
+	}
+	
+	@Test
+	public void testComputeAndPopulateStackCase11() throws Exception {
+		model.getStack().clear();
+		model.getCompleteInputList().clear();
+		model = TestDataHelper.createSampleModel("1 2 + undo * undo");
+		calculator.computeAndPopulateStack(model, 0);
+		assertTrue(model.getStack().size() == 2);
+		assertEquals("stack: 1 2", model.printOutput());
+	}
+	
+	@Test
+	public void testComputeAndPopulateStackCase12() throws Exception {
+		model.getStack().clear();
+		model.getCompleteInputList().clear();
+		model = TestDataHelper.createSampleModel("1 2 * undo 3 + undo");
+		calculator.computeAndPopulateStack(model, 0);
+		assertTrue(model.getStack().size() == 3);
+		assertEquals("stack: 1 2 3", model.printOutput());
+	}
+	
+	@Test
+	public void testComputeAndPopulateStackCase13() throws Exception {
+		model.getStack().clear();
+		model.getCompleteInputList().clear();
+		model = TestDataHelper.createSampleModel("1 2 * undo undo");
+		calculator.computeAndPopulateStack(model, 0);
+		assertTrue(model.getStack().size() == 1);
+		assertEquals("stack: 1", model.printOutput());
+	}
+
 }

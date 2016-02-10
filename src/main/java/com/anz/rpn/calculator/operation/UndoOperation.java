@@ -1,141 +1,128 @@
 package com.anz.rpn.calculator.operation;
 
-import java.math.BigDecimal;
 import java.util.Stack;
 
 import com.anz.rpn.calculator.exception.InsufficientParameterException;
 import com.anz.rpn.calculator.exception.InvalidModelException;
 import com.anz.rpn.calculator.model.CalculatorConstants;
-import com.anz.rpn.calculator.model.CalculatorHelper;
+import com.anz.rpn.calculator.model.CalculatorUtil;
 import com.anz.rpn.calculator.model.OperationInfo;
 import com.anz.rpn.calculator.model.RPNCalculatorModel;
 
+/**
+ * Represents the Undo operation
+ * 
+ * @author deepamylangam
+ *
+ */
 public class UndoOperation extends AbstractOperation {
 
 	private static IOperation operation = new UndoOperation();
 
+	/**
+	 * 
+	 */
 	private UndoOperation() {
 		super(CalculatorConstants.UNDO_STR);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.anz.rpn.calculator.operation.IOperation#execute(com.anz.rpn.
+	 * calculator.model.RPNCalculatorModel,
+	 * com.anz.rpn.calculator.model.OperationInfo)
+	 */
 	@Override
 	public void execute(RPNCalculatorModel model, OperationInfo currentOpInfo)
 			throws InvalidModelException, InsufficientParameterException {
 
 		if (validateStackBeforeOperation(model, currentOpInfo)) {
-			if (currentOpInfo.getIndex() - 1 < 0) {
+			handleUndo(model, currentOpInfo.getIndex(), currentOpInfo);
+		}
+	}
+
+	/**
+	 * @param model
+	 * @param index
+	 * @param currentOpInfo
+	 * @throws InsufficientParameterException
+	 * @throws InvalidModelException
+	 */
+	protected void handleUndo(RPNCalculatorModel model, int index, OperationInfo currentOpInfo)
+			throws InsufficientParameterException, InvalidModelException {
+		if (index == 0) {
+			throw new InsufficientParameterException(currentOpInfo.getOperationValue(),
+					currentOpInfo.getOperandPosition());
+		}
+		String currVal = model.getCompleteInputList().get(index - 1);
+
+		// if currVal is Number, then just pop
+		if (CalculatorUtil.isNumber(currVal)) {
+			if (CalculatorUtil.peek(model.getStack()) == null) {
 				throw new InsufficientParameterException(currentOpInfo.getOperationValue(),
 						currentOpInfo.getOperandPosition());
-			} else
-				handleUndo(model, currentOpInfo.getIndex() - 1, currentOpInfo, true);
+			} else {
+				model.getStack().pop();
+			}
+		} else if (CalculatorUtil.isUndoCommand(currVal)) { // if prev is also
+															// undo then
+															// just pop
+			if (CalculatorUtil.peek(model.getStack()) == null) {
+				throw new InsufficientParameterException(currentOpInfo.getOperationValue(),
+						currentOpInfo.getOperandPosition());
+			} else {
+				model.getStack().pop();
+			}
+		} else { // if prev is any other operation, then try to run all the
+					// previous operations from the beginning
+			model.getStack().clear();
+			redoAllOperations(model.getStack(), index - 1, model, currentOpInfo);
+		}
+	}
+
+	/**
+	 * @param newStack
+	 * @param index
+	 * @param model
+	 * @param currentOpInfo
+	 * @throws InsufficientParameterException
+	 * @throws InvalidModelException
+	 */
+	protected void redoAllOperations(Stack<String> newStack, int index, RPNCalculatorModel model,
+			OperationInfo currentOpInfo) throws InsufficientParameterException, InvalidModelException {
+
+		for (int i = 0; i < index; i++) {
+			String val = model.getCompleteInputList().get(i);
+			if (CalculatorUtil.isKnownOperation(val)) {
+				OperationInfo opInfo = new OperationInfo(i, i, val);
+				// run the operations
+				OperationFactory.getOperationObj(model, val).execute(model, opInfo);
+			} else if (CalculatorUtil.isNumber(val)) {
+				newStack.push(val);
+			} else {
+				// TODO error
+			}
 		}
 	}
 
 	/*
-	 * protected void handleUndo(RPNCalculatorModel model, int index,
-	 * OperationInfo currentOpInfo) throws InsufficientParameterException,
-	 * InvalidModelException {
+	 * (non-Javadoc)
 	 * 
-	 * }
-	 * 
-	 * execute from the beginning as that might work and keep looping as the operation has to be done again.
-	 * protected void redoAllOperations(Stack<String> newStack, int index,
-	 * RPNCalculatorModel model, OperationInfo currentOpInfo) throws
-	 * InsufficientParameterException, InvalidModelException {
-	 * 
-	 * }
+	 * @see com.anz.rpn.calculator.operation.AbstractOperation#
+	 * validateStackBeforeOperation(com.anz.rpn.calculator.model.
+	 * RPNCalculatorModel, com.anz.rpn.calculator.model.OperationInfo)
 	 */
-
-	protected int handleUndo(RPNCalculatorModel model, int index, OperationInfo currentOpInfo, boolean undoOp)
-			throws InsufficientParameterException, InvalidModelException {
-
-		String currVal = model.getCompleteInputList().get(index);
-		// if currVal is Number
-		if ((CalculatorHelper.isNumber(currVal) || CalculatorHelper.isUndoCommand(currVal)) && undoOp) {
-			model.getStack().pop();
-		} else if (CalculatorHelper.isNumber(currVal)) {
-			model.getStack().push(currVal);
-			handleUndo(model, index - 1, currentOpInfo, false);
-		} else if (CalculatorHelper.isOperand(currVal)) {
-			// find two numbers before this
-			// operation
-			if (index >= 2) {
-				String op1 = model.getCompleteInputList().get(index - 1);
-				String op2 = model.getCompleteInputList().get(index - 2);
-				if (CalculatorHelper.isNumber(op1) || CalculatorHelper.isNumber(op2)) {
-					model.getStack().pop();
-				}
-				if (CalculatorHelper.isNumber(op1) && CalculatorHelper.isNumber(op2)) {
-					model.getStack().push(op2);
-					model.getStack().push(op1);
-				} else {
-					int counter = 0;
-					if (!CalculatorHelper.isNumber(op1)) {
-						counter = index - 1;
-					} else {
-						counter = index - 2;
-					}
-					if (CalculatorHelper.isOperand(op1) || CalculatorHelper.isOperand(op2)) {
-						handleUndo(model, counter, currentOpInfo, false);
-						OperationFactory.getOperationObj(model, currVal).execute(model, currentOpInfo); //need to do this operation each one this is failing.
-					} else if (CalculatorHelper.isSquareRootCommand(currVal)
-							|| CalculatorHelper.isUndoCommand(currVal)) {
-						handleUndo(model, counter, currentOpInfo, false);		
-					}
-					if (CalculatorHelper.isNumber(op2)) {
-						model.getStack().push(op2);
-					}
-					if (CalculatorHelper.isNumber(op1)) {
-						model.getStack().push(op1);
-					}
-				}
-			} else {
-				throw new InsufficientParameterException(currentOpInfo.getOperationValue(),
-						currentOpInfo.getOperandPosition());
-			}
-		} else if (CalculatorHelper.isSquareRootCommand(currVal)) {
-			if (CalculatorHelper.peek(model.getStack()) == null) {
-				throw new InsufficientParameterException(currentOpInfo.getOperationValue(),
-						currentOpInfo.getOperandPosition());
-			} else {
-				String op1 = model.getCompleteInputList().get(index - 1);
-				if (CalculatorHelper.isNumber(op1)) { // if it is number, then
-														// only pop the sqrt
-														// result and and push
-														// the orig
-					model.getStack().pop();
-					model.getStack().push(op1);
-				} else {
-					if (handleUndo(model, index - 1, currentOpInfo, false) == 1) {
-						SquarerootOperation.getInstance().execute(model, currentOpInfo);
-					}
-				}
-			}
-		} else if (CalculatorHelper.isUndoCommand(currVal)) {
-			String op1 = model.getCompleteInputList().get(index - 1);
-			if (CalculatorHelper.isNumber(op1)) {
-				model.getStack().push(op1);
-				handleUndo(model, index - 1, currentOpInfo, false);
-			} else if (CalculatorHelper.isUndoCommand(op1)) {
-				handleUndo(model, index - 1, currentOpInfo, false);
-			}
-		}
-
-		return 1;
-	}
-
 	@Override
 	protected boolean validateStackBeforeOperation(RPNCalculatorModel model, OperationInfo currOpInfo)
 			throws InsufficientParameterException, InvalidModelException {
 		return validateModelAndOperationInfo(model, currOpInfo);
 	}
 
+	/**
+	 * @return
+	 */
 	protected static IOperation getInstance() {
 		return operation;
-	}
-
-	@Override
-	public BigDecimal evaluate(BigDecimal... value) {
-		return null;
 	}
 }

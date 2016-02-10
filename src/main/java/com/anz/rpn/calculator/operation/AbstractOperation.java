@@ -1,16 +1,22 @@
 package com.anz.rpn.calculator.operation;
 
-import java.math.BigDecimal;
+import java.util.Stack;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.anz.rpn.calculator.exception.InsufficientParameterException;
 import com.anz.rpn.calculator.exception.InvalidModelException;
 import com.anz.rpn.calculator.model.CalculatorConstants;
-import com.anz.rpn.calculator.model.CalculatorHelper;
+import com.anz.rpn.calculator.model.CalculatorUtil;
 import com.anz.rpn.calculator.model.OperationInfo;
 import com.anz.rpn.calculator.model.RPNCalculatorModel;
 
+/**
+ * Abstract class to handle the operations of the calculator.
+ * 
+ * @author deepamylangam
+ *
+ */
 public abstract class AbstractOperation implements IOperation {
 
 	protected final String operandStr;
@@ -19,10 +25,20 @@ public abstract class AbstractOperation implements IOperation {
 		this.operandStr = operandStr;
 	}
 
-	protected final void updateModel(RPNCalculatorModel model, BigDecimal value) {
-		model.getStack().push(CalculatorHelper.convertBigDecimal(value));
+	/**
+	 * @param stack
+	 * @param value
+	 */
+	protected final void updateModel(Stack<String> stack, String value) {
+		stack.push(value);
 	}
 
+	/**
+	 * @param model
+	 * @param currOpInfo
+	 * @return
+	 * @throws InsufficientParameterException
+	 */
 	protected final boolean validateModelAndOperationInfo(RPNCalculatorModel model, OperationInfo currOpInfo)
 			throws InsufficientParameterException {
 		if (model == null || model.getStack() == null || model.getCompleteInputList() == null
@@ -36,18 +52,30 @@ public abstract class AbstractOperation implements IOperation {
 		return true;
 	}
 
+	/**
+	 * @param model
+	 * @param currOpInfo
+	 * @return
+	 * @throws InsufficientParameterException
+	 * @throws InvalidModelException
+	 */
 	protected abstract boolean validateStackBeforeOperation(RPNCalculatorModel model, OperationInfo currOpInfo)
 			throws InsufficientParameterException, InvalidModelException;
 
+	/**
+	 * @param model
+	 * @param currOpInfo
+	 * @return
+	 * @throws InvalidModelException
+	 */
 	protected boolean validateStackAfterOperation(RPNCalculatorModel model, OperationInfo currOpInfo)
 			throws InvalidModelException {
 		int size = model.getStack().size();
 		if (size > 0) {
 			String val = model.getStack().get(size - 1);
-			if (!CalculatorHelper.isNumber(val)) {
-				throw new InvalidModelException(
-						"after doing operation at " + CalculatorConstants.POSITION_STR + currOpInfo.getOperandPosition()
-								+ CalculatorConstants.OPERATOR_STR + currOpInfo.getOperationValue());
+			if (!CalculatorUtil.isNumber(val)) {
+				throw new UnsupportedOperationException(
+						"Invalid entry at " + CalculatorConstants.POSITION_STR + currOpInfo.getOperandPosition());
 			} else {
 				return true;
 			}
