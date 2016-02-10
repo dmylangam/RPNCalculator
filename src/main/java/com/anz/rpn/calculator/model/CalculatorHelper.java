@@ -2,6 +2,7 @@ package com.anz.rpn.calculator.model;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.EmptyStackException;
 import java.util.Stack;
@@ -13,7 +14,7 @@ import java.util.Stack;
 public class CalculatorHelper {
 
 	public static final BigDecimal convertString(String val) throws NumberFormatException {
-		return new BigDecimal(val, new MathContext(15));
+		return new BigDecimal(val, MathContext.DECIMAL128).setScale(15, RoundingMode.CEILING);  //TODO strip trailing zeros.
 	}
 
 	public static final String convertBigDecimal(BigDecimal decimal) {
@@ -63,7 +64,7 @@ public class CalculatorHelper {
 		if (stack == null) {
 			throw new IllegalArgumentException("Invalid argument: Null");
 		}
-		if(stack.size() - 2 < 0) {
+		if (stack.size() - 2 < 0) {
 			return null;
 		}
 		try {

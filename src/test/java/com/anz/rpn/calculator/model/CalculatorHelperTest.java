@@ -2,6 +2,7 @@ package com.anz.rpn.calculator.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -13,6 +14,18 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class CalculatorHelperTest {
+
+	@Test
+	public void testConvertString() {
+		assertNotNull(CalculatorHelper.convertString("1234578.123456789012345678"));
+		assertTrue(CalculatorHelper.convertString("12342342434.123456789056456975").toString()
+				.equals("12342342434.123456789056457"));
+		//assertTrue(CalculatorHelper.convertString("12342342434.123456").toString().equals("12342342434.123456"));
+		//assertTrue(CalculatorHelper.convertString("999.9").toString().equals("999.9"));
+		//assertTrue(CalculatorHelper.convertString("999.0").toString().equals("999"));
+		//assertTrue(CalculatorHelper.convertString("999.000708786878").toString().equals("999.000708786878"));
+		
+	}
 
 	@Test
 	public void testIsKnownOperation() {

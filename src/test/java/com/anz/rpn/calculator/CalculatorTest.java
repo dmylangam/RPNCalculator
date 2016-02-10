@@ -123,8 +123,8 @@ public class CalculatorTest {
 		index = model.getCompleteInputList().size();
 		model = TestDataHelper.addNextInput(model, "undo");
 		calculator.computeAndPopulateStack(model, index);
-		//assertTrue(model.getStack().size() == 1);
-		//assertEquals("stack: 20 5", model.printOutput());
+		assertTrue(model.getStack().size() == 2);
+		assertEquals("stack: 20 5", model.printOutput());
 		
 	}
 	

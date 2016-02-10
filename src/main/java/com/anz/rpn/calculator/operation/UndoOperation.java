@@ -1,8 +1,7 @@
 package com.anz.rpn.calculator.operation;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 
 import com.anz.rpn.calculator.exception.InsufficientParameterException;
 import com.anz.rpn.calculator.exception.InvalidModelException;
@@ -14,7 +13,6 @@ import com.anz.rpn.calculator.model.RPNCalculatorModel;
 public class UndoOperation extends AbstractOperation {
 
 	private static IOperation operation = new UndoOperation();
-	private List<IOperation> operationList = new ArrayList<IOperation>();
 
 	private UndoOperation() {
 		super(CalculatorConstants.UNDO_STR);
@@ -28,13 +26,29 @@ public class UndoOperation extends AbstractOperation {
 			if (currentOpInfo.getIndex() - 1 < 0) {
 				throw new InsufficientParameterException(currentOpInfo.getOperationValue(),
 						currentOpInfo.getOperandPosition());
-			} else handleUndo(model, currentOpInfo.getIndex() - 1, currentOpInfo, true);
+			} else
+				handleUndo(model, currentOpInfo.getIndex() - 1, currentOpInfo, true);
 		}
 	}
 
+	/*
+	 * protected void handleUndo(RPNCalculatorModel model, int index,
+	 * OperationInfo currentOpInfo) throws InsufficientParameterException,
+	 * InvalidModelException {
+	 * 
+	 * }
+	 * 
+	 * execute from the beginning as that might work and keep looping as the operation has to be done again.
+	 * protected void redoAllOperations(Stack<String> newStack, int index,
+	 * RPNCalculatorModel model, OperationInfo currentOpInfo) throws
+	 * InsufficientParameterException, InvalidModelException {
+	 * 
+	 * }
+	 */
+
 	protected int handleUndo(RPNCalculatorModel model, int index, OperationInfo currentOpInfo, boolean undoOp)
 			throws InsufficientParameterException, InvalidModelException {
-		
+
 		String currVal = model.getCompleteInputList().get(index);
 		// if currVal is Number
 		if ((CalculatorHelper.isNumber(currVal) || CalculatorHelper.isUndoCommand(currVal)) && undoOp) {
@@ -63,9 +77,10 @@ public class UndoOperation extends AbstractOperation {
 					}
 					if (CalculatorHelper.isOperand(op1) || CalculatorHelper.isOperand(op2)) {
 						handleUndo(model, counter, currentOpInfo, false);
-						OperationFactory.getOperationObj(model, currVal).execute(model, currentOpInfo);
-					} else if(CalculatorHelper.isSquareRootCommand(currVal) || CalculatorHelper.isUndoCommand(currVal)) {
-						handleUndo(model, counter, currentOpInfo, false);
+						OperationFactory.getOperationObj(model, currVal).execute(model, currentOpInfo); //need to do this operation each one this is failing.
+					} else if (CalculatorHelper.isSquareRootCommand(currVal)
+							|| CalculatorHelper.isUndoCommand(currVal)) {
+						handleUndo(model, counter, currentOpInfo, false);		
 					}
 					if (CalculatorHelper.isNumber(op2)) {
 						model.getStack().push(op2);
@@ -75,7 +90,8 @@ public class UndoOperation extends AbstractOperation {
 					}
 				}
 			} else {
-				throw new InsufficientParameterException(currentOpInfo.getOperationValue(), currentOpInfo.getOperandPosition());
+				throw new InsufficientParameterException(currentOpInfo.getOperationValue(),
+						currentOpInfo.getOperandPosition());
 			}
 		} else if (CalculatorHelper.isSquareRootCommand(currVal)) {
 			if (CalculatorHelper.peek(model.getStack()) == null) {
